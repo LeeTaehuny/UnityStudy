@@ -11,6 +11,14 @@ public class FlyAtPlayer : MonoBehaviour
 
     private Vector3 PlayerPosition;
 
+    // Awake() 함수는 Start보다 빠르게 호출됩니다. (게임 시작 시 가장 먼저 호출되는 함수)
+    // * 언리얼 엔진의 InitialzeComponents() 함수와 유사
+    void Awake()
+    {
+        // 게임 오브젝트 비활성화
+        gameObject.SetActive(false);
+    }
+
     void Start()
     {
         // 시작과 동시에 목표 위치 설정
