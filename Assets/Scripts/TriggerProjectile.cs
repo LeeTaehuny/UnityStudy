@@ -17,6 +17,9 @@ public class TriggerProjectile : MonoBehaviour
                 
                 Projectile.SetActive(true);
             }
+
+            // 1회 사용 이후 해당 트리거 오브젝트를 소멸시킵니다.
+            Destroy(gameObject);
         }
     }
 }
