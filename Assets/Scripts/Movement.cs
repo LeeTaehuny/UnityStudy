@@ -59,10 +59,23 @@ public class Movement : MonoBehaviour
         if (rotation.IsPressed())
         {
             float value = rotation.ReadValue<float>();
-            if (value != 0)
+            if (value > 0)
             {
-                transform.Rotate(0.0f, 0.0f, -value * rotationStrength * Time.fixedDeltaTime);
+                ApplyRotation(-rotationStrength);
+                
+            }
+            else if (value < 0)
+            {
+                ApplyRotation(rotationStrength);
             }
         }
+    }
+
+    private void ApplyRotation(float InRotationStrength)
+    {
+        // 회전 입력이 가해지는 동안은 물리적인 효과를 소멸시키기
+        rb.freezeRotation = true;
+        transform.Rotate(Vector3.forward * InRotationStrength * Time.fixedDeltaTime);
+        rb.freezeRotation = false;
     }
 }
