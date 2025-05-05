@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Audio;
+
 // 입력 시스템을 사용하기 위한 namespace 추가
 using UnityEngine.InputSystem;
 
@@ -8,6 +10,9 @@ public class Movement : MonoBehaviour
     [SerializeField] private InputAction rotation;
     [SerializeField] private float thrustStrength;
     [SerializeField] private float rotationStrength;
+    [SerializeField] private AudioClip mainEngine;
+    
+    private AudioSource audioSource;
 
     private Rigidbody rb;
 
@@ -31,6 +36,7 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // FixedUpdate() : 피직스와 관련된 업데이트를 진행하는 함수
@@ -38,6 +44,7 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         if (!rb) return;
+        if (!audioSource) return;
 
         ProcessThrust();
         ProcessRotation();
@@ -51,7 +58,19 @@ public class Movement : MonoBehaviour
             // Time.fixedDeltaTime : FixedUpdate() 함수의 Tick 시간을 가져오는 함수
             // - 방향 * 속도 * DeltaTime 을 통해 프레임에 독립적인 이동 가능
             rb.AddRelativeForce(Vector3.up * thrustStrength * Time.fixedDeltaTime);
+            
+            // 음원이 재생중이 아닌 경우 재생
+            if (!audioSource.isPlaying)
+            {
+                audioSource.PlayOneShot(mainEngine);
+            }
         }
+        else
+        {
+            // 발사 중이 아닌 경우 오디오 종료
+            audioSource.Stop();
+        }
+        
     }
 
     private void ProcessRotation()
