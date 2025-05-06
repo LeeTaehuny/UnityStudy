@@ -10,7 +10,10 @@ public class Movement : MonoBehaviour
     [SerializeField] private InputAction rotation;
     [SerializeField] private float thrustStrength;
     [SerializeField] private float rotationStrength;
-    [SerializeField] private AudioClip mainEngine;
+    [SerializeField] private AudioClip mainEngineSFX;
+    [SerializeField] private ParticleSystem mainBoosterVFX;
+    [SerializeField] private ParticleSystem leftBoosterVFX;
+    [SerializeField] private ParticleSystem rightBoosterVFX;
     
     private AudioSource audioSource;
 
@@ -21,6 +24,7 @@ public class Movement : MonoBehaviour
     private void OnEnable()
     {
         // InputAction을 활성화
+        // * 활성화 시키지 않으면 동작 X
         thrust.Enable();
         rotation.Enable();
     }
@@ -55,22 +59,39 @@ public class Movement : MonoBehaviour
         // InputAction.IsPressed() : InputAction에 바인딩된 키가 Pressed 이벤트를 받았는지 체크하는 함수
         if (thrust.IsPressed())
         {
-            // Time.fixedDeltaTime : FixedUpdate() 함수의 Tick 시간을 가져오는 함수
-            // - 방향 * 속도 * DeltaTime 을 통해 프레임에 독립적인 이동 가능
-            rb.AddRelativeForce(Vector3.up * thrustStrength * Time.fixedDeltaTime);
-            
-            // 음원이 재생중이 아닌 경우 재생
-            if (!audioSource.isPlaying)
-            {
-                audioSource.PlayOneShot(mainEngine);
-            }
+            StartThrusting();
         }
         else
         {
-            // 발사 중이 아닌 경우 오디오 종료
-            audioSource.Stop();
+            StopThrusting();
         }
-        
+    }
+
+    private void StartThrusting()
+    {
+        // Time.fixedDeltaTime : FixedUpdate() 함수의 Tick 시간을 가져오는 함수
+        // - 방향 * 속도 * DeltaTime 을 통해 프레임에 독립적인 이동 가능
+        rb.AddRelativeForce(Vector3.up * thrustStrength * Time.fixedDeltaTime);
+
+        // 음원이 재생중이 아닌 경우 재생
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngineSFX);
+        }
+
+        // 메인 엔진 이펙트가 재생중이 아닌 경우 재생
+        if (!mainBoosterVFX.isPlaying)
+        {
+            mainBoosterVFX.Play();
+        }
+    }
+
+    private void StopThrusting()
+    {
+        // 발사 중이 아닌 경우 오디오 종료
+        audioSource.Stop();
+        // 메인 엔진 이펙트 종료
+        mainBoosterVFX.Stop();
     }
 
     private void ProcessRotation()
@@ -80,14 +101,45 @@ public class Movement : MonoBehaviour
             float value = rotation.ReadValue<float>();
             if (value > 0)
             {
-                ApplyRotation(-rotationStrength);
-                
+                RotateRight();
             }
             else if (value < 0)
             {
-                ApplyRotation(rotationStrength);
+                RotateLeft();
             }
         }
+        else
+        {
+            StopRotating();
+        }
+    }
+
+    private void RotateRight()
+        {
+            ApplyRotation(-rotationStrength);
+            // 좌측 엔진 이펙트가 재생중이 아닌 경우 재생
+            if (!leftBoosterVFX.isPlaying)
+            {
+                rightBoosterVFX.Stop();
+                leftBoosterVFX.Play();
+            }
+        }
+
+    private void RotateLeft()
+    {
+        ApplyRotation(rotationStrength);
+        // 우측 엔진 이펙트가 재생중이 아닌 경우 재생
+        if (!rightBoosterVFX.isPlaying)
+        {
+            leftBoosterVFX.Stop();
+            rightBoosterVFX.Play();
+        }
+    }
+
+    private void StopRotating()
+    {
+        rightBoosterVFX.Stop();
+        leftBoosterVFX.Stop();
     }
 
     private void ApplyRotation(float InRotationStrength)
