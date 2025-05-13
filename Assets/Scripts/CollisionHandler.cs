@@ -1,9 +1,17 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField] ParticleSystem DestroyVFX;
+
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
+        if (DestroyVFX)
+        {
+            Instantiate(DestroyVFX, transform.position, Quaternion.identity);
+        }
+
+        Destroy(this.gameObject);
     }
 }
