@@ -150,6 +150,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy 4
       objectReference: {fileID: 0}
+    - target: {fileID: 6474714832398228683, guid: 19319ea6033f0e743ae350dc5b74610e, type: 3}
+      propertyPath: hitPoints
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6474714832398228683, guid: 19319ea6033f0e743ae350dc5b74610e, type: 3}
+      propertyPath: scoreValue
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2102269804002691590, guid: 19319ea6033f0e743ae350dc5b74610e, type: 3}

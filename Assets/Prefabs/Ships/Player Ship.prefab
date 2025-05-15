@@ -85,10 +85,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controlSpeed: 50
-  maxOffsetX: 25
-  minOffsetX: -25
-  maxOffsetY: 25
-  minOffsetY: -5
+  maxOffsetX: 20
+  minOffsetX: -20
+  maxOffsetY: 35
+  minOffsetY: 0
   controlRollFactor: 20
   controlPitchFactor: 20
   rotationSpeed: 10
