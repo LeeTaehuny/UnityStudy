@@ -71,7 +71,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void ReSpawnChunk()
     {
-        if (chunks[0].transform.position.z < Camera.main.transform.position.z - chunkSize)
+        if (chunks[0].transform.position.z < -10.0f)
         {
             GameObject tmpChunk = chunks[0];
 

@@ -1,9 +1,12 @@
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
+    [SerializeField] Vector2 minClamp;
+    [SerializeField] Vector2 maxClamp;
 
     Vector2 movement;
     Rigidbody rb;
@@ -28,13 +31,18 @@ public class PlayerController : MonoBehaviour
     {
         if (rb)
         {
+            // 현재 위치 저장
             Vector3 currentPosition = rb.position;
+            // 이동 위치 저장
             Vector3 moveVector = new Vector3(movement.x, 0.0f, movement.y);
-
+            // 다음 위치 계산산
             Vector3 newPosition = currentPosition + moveVector * moveSpeed * Time.fixedDeltaTime;
-            rb.MovePosition(newPosition);
 
-            //Debug.Log(moveVector);
+            // 위치 제한
+            newPosition.x = Mathf.Clamp(newPosition.x, minClamp.x, maxClamp.x);
+            newPosition.z = Mathf.Clamp(newPosition.z, minClamp.y, maxClamp.y);
+
+            rb.MovePosition(newPosition);
         }
     }
 }
