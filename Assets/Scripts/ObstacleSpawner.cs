@@ -1,14 +1,23 @@
+using System.Collections;
 using UnityEngine;
 
 public class ObstacleSpawner : MonoBehaviour
 {
+    [SerializeField] Transform obstacleParent;
     [SerializeField] GameObject obstaclePrefab;
+    [SerializeField] float obstacleSpawnTime;
 
     void Start()
     {
-        for (int i = 0; i < 5; i++)
+        StartCoroutine(SpawnObstacleRoutine());
+    }
+
+    IEnumerator SpawnObstacleRoutine()
+    {
+        while (true)
         {
-            Instantiate(obstaclePrefab, transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(obstacleSpawnTime);
+            Instantiate(obstaclePrefab, transform.position, Random.rotation, obstacleParent);
         }
     }
 }
