@@ -10,7 +10,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] GameObject chunkPrefab;
     [SerializeField] Transform chunkParent;
     [SerializeField] int chunkQuantity;
-    [SerializeField] int chunkSize;
+    [SerializeField] public int chunkSize;
     [SerializeField] float moveSpeed;
 
     List<GameObject> chunks = new List<GameObject>();
