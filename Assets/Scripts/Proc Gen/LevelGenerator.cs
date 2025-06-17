@@ -11,6 +11,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] CameraController cameraController;
     [SerializeField] GameObject chunkPrefab;
     [SerializeField] Transform chunkParent;
+    [SerializeField] ScoreManager scoreManager;  
 
     [Header("Level Settings")]
     [SerializeField] int chunkQuantity;
@@ -72,8 +73,14 @@ public class LevelGenerator : MonoBehaviour
         // * 부모 Transform을 비워두면 월드를 부모로 스폰
         GameObject newChunk = Instantiate(chunkPrefab, spawnPosition, Quaternion.identity, chunkParent);
 
-        // 리스트에 추가합니다.
-        chunks.Add(newChunk);
+        if (newChunk)
+        {
+            // 초기화
+            newChunk.GetComponent<Chunk>().Init(this, scoreManager);
+
+            // 리스트에 추가합니다.
+            chunks.Add(newChunk);   
+        }
     }
 
     private Vector3 CalculateSpawnPosition(int index)

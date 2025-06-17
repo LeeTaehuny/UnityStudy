@@ -11,12 +11,20 @@ public class Chunk : MonoBehaviour
     [SerializeField] float coinSpawnChance;
 
     List<int> availableLanes = new List<int> { 0, 1, 2 };
+    LevelGenerator levelGenerator;
+    ScoreManager scoreManager;
 
     void Start()
     {
         SpawnFence();
         SpawnApple();
         SpawnCoin();
+    }
+
+    public void Init(LevelGenerator levelGenerator, ScoreManager scoreManager)
+    {
+        this.levelGenerator = levelGenerator;
+        this.scoreManager = scoreManager;
     }
 
     void SpawnFence()
@@ -45,7 +53,13 @@ public class Chunk : MonoBehaviour
 
         // 해당 요소에 해당되는 값으로 스폰합니다.
         Vector3 spawnPosition = new Vector3(lanes[seletedLane], transform.position.y, transform.position.z);
-        Instantiate(applePrefab, spawnPosition, Quaternion.identity, transform);
+        Apple newApple = Instantiate(applePrefab, spawnPosition, Quaternion.identity, transform).GetComponent<Apple>();
+
+        if (newApple && levelGenerator)
+        {
+            newApple.Init(levelGenerator);
+        }
+
     }
 
     void SpawnCoin()
@@ -69,7 +83,12 @@ public class Chunk : MonoBehaviour
 
             // 해당 요소에 해당되는 값으로 스폰합니다.
             Vector3 spawnPosition = new Vector3(lanes[seletedLane], transform.position.y, positionZ);
-            Instantiate(coinPrefab, spawnPosition, Quaternion.identity, transform);
+            Coin coin = Instantiate(coinPrefab, spawnPosition, Quaternion.identity, transform).GetComponent<Coin>();
+
+            if (coin && scoreManager)
+            {
+                coin.Init(scoreManager);
+            }
         }
     }
 
