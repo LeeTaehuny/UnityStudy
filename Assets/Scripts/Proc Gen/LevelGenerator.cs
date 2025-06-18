@@ -9,13 +9,16 @@ public class LevelGenerator : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] CameraController cameraController;
-    [SerializeField] GameObject chunkPrefab;
+    [SerializeField] GameObject[] chunkPrefabs;
+    [SerializeField] GameObject checkpointChunk; 
     [SerializeField] Transform chunkParent;
-    [SerializeField] ScoreManager scoreManager;  
+    [SerializeField] ScoreManager scoreManager;
+    [SerializeField] GameManager gameManager;
 
     [Header("Level Settings")]
     [SerializeField] int chunkQuantity;
     [SerializeField] public int chunkSize;
+    [SerializeField] int checkpointInterval = 8;
 
     [Header("Physics")]
     [SerializeField] float moveSpeed;
@@ -25,6 +28,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] float maxGravityZ = -2.0f;
 
     List<GameObject> chunks = new List<GameObject>();
+    int spawnCount;
 
     private void Start()
     {
@@ -68,19 +72,44 @@ public class LevelGenerator : MonoBehaviour
 
     private void SpawnChunk(Vector3 spawnPosition)
     {
+        GameObject chunkToSpawn = ChooseChunkToSpawn();
         // 인스턴스를 생성합니다.
         // * Instantiate(생성할 오브젝트, 스폰 위치, 스폰 각도, 부모 Transform)
-        // * 부모 Transform을 비워두면 월드를 부모로 스폰
-        GameObject newChunk = Instantiate(chunkPrefab, spawnPosition, Quaternion.identity, chunkParent);
+        // * 부모 Transform을 비워두면 월드를 부모로 스폰.
+        GameObject newChunk = Instantiate(chunkToSpawn, spawnPosition, Quaternion.identity, chunkParent);
 
         if (newChunk)
         {
             // 초기화
             newChunk.GetComponent<Chunk>().Init(this, scoreManager);
 
+            if (newChunk.GetComponent<Checkpoint>())
+            { 
+                newChunk.GetComponent<Checkpoint>().Init(gameManager);
+            }
+
             // 리스트에 추가합니다.
-            chunks.Add(newChunk);   
+                chunks.Add(newChunk);
         }
+    }
+
+    private GameObject ChooseChunkToSpawn()
+    {
+        GameObject chunkToSpawn;
+        // 체크 포인트를 생성해야 하는지 체크합니다.
+        if (spawnCount != 0 && spawnCount % checkpointInterval == 0)
+        {
+            chunkToSpawn = checkpointChunk;
+            spawnCount = 0;
+        }
+        else
+        {
+            chunkToSpawn = chunkPrefabs[UnityEngine.Random.Range(0, chunkPrefabs.Length)];
+            // 카운트를 증가시킵니다.
+            spawnCount++;
+        }
+
+        return chunkToSpawn;
     }
 
     private Vector3 CalculateSpawnPosition(int index)
