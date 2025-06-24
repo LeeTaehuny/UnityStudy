@@ -8,10 +8,17 @@ public class ObstacleSpawner : MonoBehaviour
     [SerializeField] List<GameObject> obstaclePrefabs = new List<GameObject>();
     [SerializeField] float spawnWidth;
     [SerializeField] float obstacleSpawnTime;
+    [SerializeField] float minObstacleSpawnTime = 0.2f;
 
     void Start()
     {
         StartCoroutine(SpawnObstacleRoutine());
+    }
+
+    public void DecreaseObstacleSpawnTime(float amount)
+    {
+        obstacleSpawnTime -= amount;
+        obstacleSpawnTime = Mathf.Max(obstacleSpawnTime, minObstacleSpawnTime);
     }
 
     IEnumerator SpawnObstacleRoutine()
